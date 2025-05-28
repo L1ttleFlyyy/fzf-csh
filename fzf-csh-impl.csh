@@ -8,9 +8,28 @@
 # fzf home page: https://github.com/junegunn/fzf
 #
 
-if ( $#argv != 1 ) then
+if ( $#argv != 2 ) then
     exit 1
 endif
+
+set HIST_MODE = 0
+set FILE_MODE = 0
+set DIR_MODE = 0 #TODO: support dir search and ALT-C mode
+
+switch ($2) 
+    case "file":
+        set FILE_MODE = 1
+        breaksw
+    case "hist":
+        set HIST_MODE = 1
+        breaksw
+    case "dir":
+        set DIR_MODE = 1
+        breaksw
+    default:
+        exit 1
+        breaksw
+endsw
 
 set FILE_CMD = $1
 set KEY_AUX = "^X^F^G^H^I^J"
@@ -20,24 +39,46 @@ if ( $? != 0 ) then
     echo "fzf-csh: unable to write to ${FILE_CMD}."
     unset FILE_CMD
     unset KEY_AUX
+    unset FILE_MODE
+    unset HIST_MODE
+    unset DIR_MODE
     exit 1
 endif
 
-set ES_OLD = $echo_style
-set echo_style = both
+printf "bindkey -s %s " $KEY_AUX >! $FILE_CMD
 
-echo -n bindkey -s \"${KEY_AUX}\" >! $FILE_CMD
-echo -n " " >> $FILE_CMD
+set TMP_FZF_CMD = ""
+set TMP_FZF_OPT = ""
 
-set echo_style = $ES_OLD
-unset ES_OLD
-
-set HEIGHT = ""
-if ( $?DISPLAY ) then
-    set HEIGHT = "--height=50%"
+if ( $FILE_MODE == 1 ) then
+    set TMP_FZF_CMD = "fzf"
+    set TMP_FZF_OPT = ""
+    if ( $?FZF_CTRL_T_OPTS ) then
+        set TMP_FZF_OPT = "${TMP_FZF_OPT} ${FZF_CTRL_T_OPTS}"
+    endif
 endif
 
-fzf --tac --no-sort $HEIGHT | \
+if ( $HIST_MODE == 1 ) then
+    set TMP_FZF_CMD = "history -h | tac | awk '\!seen[\$0]++' | fzf"
+    set TMP_FZF_OPT = "--scheme=history --bind=ctrl-r:toggle-sort --wrap-sign '\t↳ ' --highlight-line +m"
+    if ( $?FZF_CTRL_R_OPTS ) then
+        set TMP_FZF_OPT = "${TMP_FZF_OPT} ${FZF_CTRL_R_OPTS}"
+    endif
+endif
+
+if ( $DIR_MODE == 1 ) then
+    set TMP_FZF_CMD = "fzf"
+    set TMP_FZF_OPT = ""
+    if ( $?FZF_ALT_C_OPTS ) then
+        set TMP_FZF_OPT = "${TMP_FZF_OPT} ${FZF_ALT_C_OPTS}"
+    endif
+endif
+
+unset FILE_MODE
+unset HIST_MODE
+unset DIR_MODE
+
+eval "${TMP_FZF_CMD} ${TMP_FZF_OPT}" | \
     sed -E -e 's,\\,\\\\\\\\,g' \
          -e 's, ,\\ ,g'       \
          -e "s,',\\',g"       \
@@ -67,5 +108,5 @@ endif
 
 unset FILE_CMD
 unset KEY_AUX
-unset HEIGHT
-
+unset TMP_FZF_CMD
+unset TMP_FZF_OPT
