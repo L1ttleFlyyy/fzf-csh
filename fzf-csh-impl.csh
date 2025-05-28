@@ -53,13 +53,16 @@ set TMP_FZF_OPT = ""
 if ( $FILE_MODE == 1 ) then
     set TMP_FZF_CMD = "fzf"
     set TMP_FZF_OPT = ""
+    if ( $?FZF_CTRL_T_COMMAND ) then
+        set TMP_FZF_CMD = "${FZF_CTRL_T_COMMAND} | fzf"
+    endif
     if ( $?FZF_CTRL_T_OPTS ) then
         set TMP_FZF_OPT = "${TMP_FZF_OPT} ${FZF_CTRL_T_OPTS}"
     endif
 endif
 
 if ( $HIST_MODE == 1 ) then
-    set TMP_FZF_CMD = "history -h | tac | awk '\!seen[\$0]++' | fzf"
+    set TMP_FZF_CMD = "history -h | tac | fzf"
     set TMP_FZF_OPT = "--scheme=history --bind=ctrl-r:toggle-sort --wrap-sign '\t↳ ' --highlight-line +m"
     if ( $?FZF_CTRL_R_OPTS ) then
         set TMP_FZF_OPT = "${TMP_FZF_OPT} ${FZF_CTRL_R_OPTS}"
@@ -67,8 +70,11 @@ if ( $HIST_MODE == 1 ) then
 endif
 
 if ( $DIR_MODE == 1 ) then
-    set TMP_FZF_CMD = "fzf"
+    set TMP_FZF_CMD = "find . -type d | fzf"
     set TMP_FZF_OPT = ""
+    if ( $?FZF_ALT_C_COMMAND ) then
+        set TMP_FZF_CMD = "${FZF_ALT_C_COMMAND} | fzf"
+    endif
     if ( $?FZF_ALT_C_OPTS ) then
         set TMP_FZF_OPT = "${TMP_FZF_OPT} ${FZF_ALT_C_OPTS}"
     endif
