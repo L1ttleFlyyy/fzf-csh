@@ -45,7 +45,11 @@ if ( $? != 0 ) then
     exit 1
 endif
 
-printf "bindkey -s %s " $KEY_AUX >! $FILE_CMD
+if ( $DIR_MODE == 1 ) then
+    printf "cd " >! $FILE_CMD
+else
+    printf "bindkey -s %s " $KEY_AUX >! $FILE_CMD
+endif
 
 set TMP_FZF_CMD = ""
 set TMP_FZF_OPT = ""

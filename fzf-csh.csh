@@ -54,6 +54,7 @@ set KEY_HISTORY = "^R"
 set KEY_HISTORY_AUX = "^X^A^B^C^D^E"
 set KEY_AUX = "^X^F^G^H^I^J"
 
+# TODO: randomize FILE_CMD to make sure the script is reentrant
 bindkey -c $KEY_HISTORY_AUX "${FILE_IMPL} ${FILE_CMD} hist && source ${FILE_CMD}; \
                              rm -f ${FILE_CMD}"
 bindkey -s $KEY_HISTORY "${KEY_HISTORY_AUX}${KEY_AUX}"
@@ -66,6 +67,10 @@ bindkey -c $KEY_FILES_AUX "${FILE_IMPL} ${FILE_CMD} file && source ${FILE_CMD}; 
                            rm -f ${FILE_CMD}"
 bindkey -s $KEY_FILES "${KEY_FILES_AUX}${KEY_AUX}"
 
+set KEY_DIRS = "^[c"
+
+bindkey -c $KEY_DIRS "${FILE_IMPL} ${FILE_CMD} dir && source ${FILE_CMD}; \
+                           rm -f ${FILE_CMD}"
 
 unset DIR_OUT
 unset FILE_CMD
@@ -74,5 +79,5 @@ unset KEY_HISTORY
 unset KEY_HISTORY_AUX
 unset KEY_FILES
 unset KEY_FILES_AUX
+unset KEY_DIRS
 unset KEY_AUX
-
