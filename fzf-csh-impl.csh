@@ -14,7 +14,7 @@ endif
 
 set HIST_MODE = 0
 set FILE_MODE = 0
-set DIR_MODE = 0 #TODO: support dir search and ALT-C mode
+set DIR_MODE = 0
 
 switch ($2) 
     case "file":
@@ -46,9 +46,9 @@ if ( $? != 0 ) then
 endif
 
 if ( $DIR_MODE == 1 ) then
-    printf "bindkey -s %s cd " $KEY_AUX >! $FILE_CMD
+    printf "bindkey -s %s 'cd " $KEY_AUX >! $FILE_CMD
 else
-    printf "bindkey -s %s " $KEY_AUX >! $FILE_CMD
+    printf "bindkey -s %s '" $KEY_AUX >! $FILE_CMD
 endif
 
 set TMP_FZF_CMD = ""
@@ -66,8 +66,8 @@ if ( $FILE_MODE == 1 ) then
 endif
 
 if ( $HIST_MODE == 1 ) then
-    set TMP_FZF_CMD = "history -h | tac | fzf"
-    set TMP_FZF_OPT = "--scheme=history --bind=ctrl-r:toggle-sort --wrap-sign '\t↳ ' --highlight-line +m"
+    set TMP_FZF_CMD = "history | fzf"
+    set TMP_FZF_OPT = "--tac --scheme=history --bind=ctrl-r:toggle-sort --wrap-sign '\t↳ ' --highlight-line +m"
     if ( $?FZF_CTRL_R_OPTS ) then
         set TMP_FZF_OPT = "${TMP_FZF_OPT} ${FZF_CTRL_R_OPTS}"
     endif
@@ -110,7 +110,7 @@ eval "${TMP_FZF_CMD} ${TMP_FZF_OPT}" | \
          -e 's,\|,\\|,g'      \
          -e 's,\?,\\?,g'      \
          -e 's,\^,\\^,g'      \
-    >> $FILE_CMD
+    | tr "\n" "'" >> $FILE_CMD
 
 if ( $? != 0 ) then
     echo bindkey \"${KEY_AUX}\" backward-char >! $FILE_CMD
