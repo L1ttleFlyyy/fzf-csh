@@ -37,6 +37,7 @@ if ( $? != 0 ) then
 endif
 
 
+# TODO: randomize FILE_CMD to make sure the script is reentrant
 set FILE_CMD = "${DIR_OUT}/fzf-csh-cmd.tmp"
 set FILE_IMPL = "fzf-csh-impl.csh"
 
@@ -54,8 +55,7 @@ set KEY_HISTORY = "^R"
 set KEY_HISTORY_AUX = "^X^A^B^C^D^E"
 set KEY_AUX = "^X^F^G^H^I^J"
 
-# TODO: randomize FILE_CMD to make sure the script is reentrant
-bindkey -c $KEY_HISTORY_AUX "${FILE_IMPL} ${FILE_CMD} hist && source ${FILE_CMD}; \
+bindkey -c $KEY_HISTORY_AUX "history | ${FILE_IMPL} ${FILE_CMD} hist && source ${FILE_CMD}; \
                              rm -f ${FILE_CMD}"
 bindkey -s $KEY_HISTORY "${KEY_HISTORY_AUX}${KEY_AUX}"
 

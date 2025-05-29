@@ -66,7 +66,7 @@ if ( $FILE_MODE == 1 ) then
 endif
 
 if ( $HIST_MODE == 1 ) then
-    set TMP_FZF_CMD = "history | fzf"
+    set TMP_FZF_CMD = "cat | fzf"
     set TMP_FZF_OPT = "--tac --scheme=history --bind=ctrl-r:toggle-sort --wrap-sign '\t↳ ' --highlight-line +m"
     if ( $?FZF_CTRL_R_OPTS ) then
         set TMP_FZF_OPT = "${TMP_FZF_OPT} ${FZF_CTRL_R_OPTS}"
