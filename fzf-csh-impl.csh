@@ -53,6 +53,7 @@ endif
 
 set TMP_FZF_CMD = ""
 set TMP_FZF_OPT = ""
+set TMP_FZF_POST_CMD = ""
 
 if ( $FILE_MODE == 1 ) then
     set TMP_FZF_CMD = "fzf"
@@ -68,6 +69,7 @@ endif
 if ( $HIST_MODE == 1 ) then
     set TMP_FZF_CMD = "cat | fzf"
     set TMP_FZF_OPT = "--tac --scheme=history --bind=ctrl-r:toggle-sort --wrap-sign '\t↳ ' --highlight-line +m"
+    set TMP_FZF_POST_CMD = "| cut -f3-"
     if ( $?FZF_CTRL_R_OPTS ) then
         set TMP_FZF_OPT = "${TMP_FZF_OPT} ${FZF_CTRL_R_OPTS}"
     endif
@@ -88,7 +90,7 @@ unset FILE_MODE
 unset HIST_MODE
 unset DIR_MODE
 
-eval "${TMP_FZF_CMD} ${TMP_FZF_OPT}" | \
+eval "${TMP_FZF_CMD} ${TMP_FZF_OPT} ${TMP_FZF_POST_CMD}" | \
     sed -E -e 's,\\,\\\\\\\\,g' \
          -e 's, ,\\ ,g'       \
          -e "s,',\\',g"       \
@@ -120,3 +122,4 @@ unset FILE_CMD
 unset KEY_AUX
 unset TMP_FZF_CMD
 unset TMP_FZF_OPT
+unset TMP_FZF_POST_CMD
