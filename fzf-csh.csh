@@ -68,9 +68,11 @@ bindkey -c $KEY_FILES_AUX "${FILE_IMPL} ${FILE_CMD} file && source ${FILE_CMD}; 
 bindkey -s $KEY_FILES "${KEY_FILES_AUX}${KEY_AUX}"
 
 set KEY_DIRS = "^[c"
+set KEY_DIRS_AUX = "^X^O^P^Q^R^S"
 
-bindkey -c $KEY_DIRS "${FILE_IMPL} ${FILE_CMD} dir && source ${FILE_CMD}; \
+bindkey -c $KEY_DIRS_AUX "${FILE_IMPL} ${FILE_CMD} dir && source ${FILE_CMD}; \
                            rm -f ${FILE_CMD}"
+bindkey -s $KEY_DIRS "${KEY_DIRS_AUX}${KEY_AUX}"
 
 unset DIR_OUT
 unset FILE_CMD
@@ -80,4 +82,5 @@ unset KEY_HISTORY_AUX
 unset KEY_FILES
 unset KEY_FILES_AUX
 unset KEY_DIRS
+unset KEY_DIRS_AUX
 unset KEY_AUX

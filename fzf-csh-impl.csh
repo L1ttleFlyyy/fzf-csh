@@ -46,7 +46,7 @@ if ( $? != 0 ) then
 endif
 
 if ( $DIR_MODE == 1 ) then
-    printf "cd " >! $FILE_CMD
+    printf "bindkey -s %s cd " $KEY_AUX >! $FILE_CMD
 else
     printf "bindkey -s %s " $KEY_AUX >! $FILE_CMD
 endif
